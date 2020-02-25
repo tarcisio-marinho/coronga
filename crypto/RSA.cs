@@ -1,87 +1,76 @@
 using System;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace coronga.crypto
 {
     public class RSA
     {
-        readonly string pubKeyPath;
-        readonly string priKeyPath;
+        private RSAParameters _privKey;
 
-        public RSA(string publicPath, string privPath){
-            this.pubKeyPath = publicPath;
-            this.priKeyPath = privPath;
-        }
-        
-        public void CreateKeys()
+        private RSAParameters _pubKey;
+
+        public byte[] PubKey
         {
-            RSACryptoServiceProvider csp = new RSACryptoServiceProvider(2048);
-            RSAParameters privKey = csp.ExportParameters(true);
-            RSAParameters pubKey = csp.ExportParameters(false);
+            get
+            {
+                var sw = new StringWriter();
+                var xs = new XmlSerializer(typeof(RSAParameters));
+                xs.Serialize(sw, this._pubKey);
+                return Encoding.ASCII.GetBytes(sw.ToString());
+            }
+        }
+
+        public byte[] PrivKey
+        {
+            get
+            {
+                var sw = new StringWriter();
+                var xs = new XmlSerializer(typeof(RSAParameters));
+                xs.Serialize(sw, this._privKey);
+                return Encoding.ASCII.GetBytes(sw.ToString());
+            }
+        }
+
+        private RSACryptoServiceProvider serviceProvider;
+        public RSA()
+        {
+            this.serviceProvider = new RSACryptoServiceProvider(2048);
+            this._privKey = serviceProvider.ExportParameters(true);
+            this._pubKey = serviceProvider.ExportParameters(false);
+        }
+
+        public void storeKeys(string path)
+        {
             string pubKeyString;
             {
-                //we need some buffer
                 var sw = new StringWriter();
-                //we need a serializer
                 var xs = new XmlSerializer(typeof(RSAParameters));
-                //serialize the key into the stream
-                xs.Serialize(sw, pubKey);
-                //get the string from the stream
+                xs.Serialize(sw, this._pubKey);
                 pubKeyString = sw.ToString();
-                File.WriteAllText(pubKeyPath, pubKeyString);
+                File.WriteAllText(path + "public.key", pubKeyString);
             }
             string privKeyString;
             {
-                //we need some buffer
                 var sw = new StringWriter();
-                //we need a serializer
                 var xs = new XmlSerializer(typeof(RSAParameters));
-                //serialize the key into the stream
-                xs.Serialize(sw, privKey);
-                //get the string from the stream
+                xs.Serialize(sw, this._privKey);
                 privKeyString = sw.ToString();
-                File.WriteAllText(priKeyPath, privKeyString);
+                File.WriteAllText(path + "private.key", privKeyString);
             }
         }
-        public void EncryptFile(string filePath)
+
+        public byte[] Encrypt(string plainTextContent)
         {
-            string pubKeyString;
-            {
-                using (StreamReader reader = new StreamReader(pubKeyPath))
-                {
-                    pubKeyString = reader.ReadToEnd();
-                }
-            }
-            var sr = new StringReader(pubKeyString);
-            var xs = new XmlSerializer(typeof(RSAParameters));
-            RSACryptoServiceProvider csp = new RSACryptoServiceProvider();
-            csp.ImportParameters((RSAParameters)xs.Deserialize(sr));
-            byte[] bytesPlainTextData = File.ReadAllBytes(filePath);
-            var bytesCipherText = csp.Encrypt(bytesPlainTextData, false);
-            string encryptedText = Convert.ToBase64String(bytesCipherText);
-            File.WriteAllText(filePath, encryptedText);
+            return this.serviceProvider.Encrypt(Encoding.ASCII.GetBytes(plainTextContent), false);
         }
-        public void DecryptFile(string filePath)
+
+        public string Decrypt(byte[] encryptedContent)
         {
-            RSACryptoServiceProvider csp = new RSACryptoServiceProvider();
-            string privKeyString;
-            {
-                privKeyString = File.ReadAllText(priKeyPath);
-                var sr = new StringReader(privKeyString);
-                var xs = new XmlSerializer(typeof(RSAParameters));
-                RSAParameters privKey = (RSAParameters)xs.Deserialize(sr);
-                csp.ImportParameters(privKey);
-            }
-            string encryptedText;
-            using (StreamReader reader = new StreamReader(filePath))
-            {
-                encryptedText = reader.ReadToEnd();
-            }
-            byte[] bytesCipherText = Convert.FromBase64String(encryptedText);
-            byte[] bytesPlainTextData = csp.Decrypt(bytesCipherText, false);
-            File.WriteAllBytes(filePath, bytesPlainTextData);
+            var decryptedContent = this.serviceProvider.Decrypt(encryptedContent, false);
+            return Encoding.UTF8.GetString(decryptedContent, 0, decryptedContent.Length);
         }
     }
 }
