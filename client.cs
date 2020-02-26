@@ -15,6 +15,7 @@ namespace coronga
         private Socket sock;
         private RSA rsa;
         private RSA serverRSA;
+        private AES aes;
         private byte[] buffer = new byte[4096];
         public void main(string[] args)
         {
@@ -45,7 +46,11 @@ namespace coronga
 
         public void exchangeAESKey()
         {
-
+            int bytesReceived = this.sock.Receive(buffer);
+            byte[] key = buffer;
+            int br = this.sock.Receive(buffer);
+            byte[] IV = buffer;
+            this.aes = new AES(key, IV);
         }
 
         public void StartClient()
@@ -67,10 +72,10 @@ namespace coronga
                 {
                     this.sock.Connect(this.remoteEP);
                     Console.WriteLine("Socket connected to {0}", this.sock.RemoteEndPoint.ToString());
+                    this.exchangeRSAKeys();
+                    this.exchangeAESKey();
+                    this.exchangeMsgs();
 
-                    int bytesSent = this.sock.Send(Encoding.ASCII.GetBytes("This is a test<EOF>"));
-                    int bytesRec = this.sock.Receive(this.buffer);
-                    Console.WriteLine("Echoed test = {0}", Encoding.ASCII.GetString(this.buffer, 0, bytesRec));
                 }
                 catch (ArgumentNullException ane)
                 {
@@ -85,6 +90,10 @@ namespace coronga
                     Console.WriteLine("Unexpected exception : {0}", e.ToString());
                 }
             }
+        }
+        private void exchangeMsgs()
+        {
+            throw new NotImplementedException();
         }
     }
 }
