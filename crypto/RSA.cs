@@ -42,6 +42,18 @@ namespace coronga.crypto
             this._pubKey = serviceProvider.ExportParameters(false);
         }
 
+
+        // when only public key provided by server
+        public RSA(string publicKey)
+        {
+            this.serviceProvider = new RSACryptoServiceProvider(2048);
+
+            var sr = new StringReader(publicKey);
+            var xs = new XmlSerializer(typeof(RSAParameters));
+
+            this.serviceProvider.ImportParameters((RSAParameters)xs.Deserialize(sr));
+        }
+
         public void storeKeys(string path)
         {
             string pubKeyString;

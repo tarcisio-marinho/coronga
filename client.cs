@@ -1,7 +1,9 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Xml.Serialization;
 using coronga.crypto;
 
 namespace coronga
@@ -10,8 +12,10 @@ namespace coronga
     {
         public readonly string address = "127.0.0.1";
         public IPEndPoint remoteEP;
-        Socket sock;
-        RSA rsa;
+        private Socket sock;
+        private RSA rsa;
+        private RSA serverRSA;
+        private byte[] buffer = new byte[4096];
         public void main(string[] args)
         {
             this.rsa = new RSA();
@@ -32,13 +36,20 @@ namespace coronga
             sock.Close();
         }
 
-        public void exchangeKeys(){
-            this.sock.Send()
+        public void exchangeRSAKeys()
+        {
+            this.sock.Send(this.rsa.PubKey);
+            int bytesReceived = this.sock.Receive(buffer);
+            this.serverRSA = new RSA(Encoding.UTF8.GetString(buffer, 0, buffer.Length));
+        }
+
+        public void exchangeAESKey()
+        {
+
         }
 
         public void StartClient()
         {
-            byte[] bytes = new byte[1024];
             while (true)
             {
                 try
@@ -57,13 +68,9 @@ namespace coronga
                     this.sock.Connect(this.remoteEP);
                     Console.WriteLine("Socket connected to {0}", this.sock.RemoteEndPoint.ToString());
 
-                    byte[] msg = Encoding.ASCII.GetBytes("This is a test<EOF>");
-
-                    int bytesSent = this.sock.Send(msg);
-
-                    int bytesRec = this.sock.Receive(bytes);
-                    Console.WriteLine("Echoed test = {0}", Encoding.ASCII.GetString(bytes, 0, bytesRec));
-
+                    int bytesSent = this.sock.Send(Encoding.ASCII.GetBytes("This is a test<EOF>"));
+                    int bytesRec = this.sock.Receive(this.buffer);
+                    Console.WriteLine("Echoed test = {0}", Encoding.ASCII.GetString(this.buffer, 0, bytesRec));
                 }
                 catch (ArgumentNullException ane)
                 {
