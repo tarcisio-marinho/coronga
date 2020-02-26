@@ -9,3 +9,14 @@
 /home/tarcisio/Projects/coronga/obj/Debug/netcoreapp3.0/coronga.AssemblyInfo.cs
 /home/tarcisio/Projects/coronga/obj/Debug/netcoreapp3.0/coronga.dll
 /home/tarcisio/Projects/coronga/obj/Debug/netcoreapp3.0/coronga.pdb
+/home/tarcisio/Projects/general/coronga/bin/Debug/netcoreapp3.0/coronga
+/home/tarcisio/Projects/general/coronga/bin/Debug/netcoreapp3.0/coronga.deps.json
+/home/tarcisio/Projects/general/coronga/bin/Debug/netcoreapp3.0/coronga.runtimeconfig.json
+/home/tarcisio/Projects/general/coronga/bin/Debug/netcoreapp3.0/coronga.runtimeconfig.dev.json
+/home/tarcisio/Projects/general/coronga/bin/Debug/netcoreapp3.0/coronga.dll
+/home/tarcisio/Projects/general/coronga/bin/Debug/netcoreapp3.0/coronga.pdb
+/home/tarcisio/Projects/general/coronga/obj/Debug/netcoreapp3.0/coronga.csprojAssemblyReference.cache
+/home/tarcisio/Projects/general/coronga/obj/Debug/netcoreapp3.0/coronga.AssemblyInfoInputs.cache
+/home/tarcisio/Projects/general/coronga/obj/Debug/netcoreapp3.0/coronga.AssemblyInfo.cs
+/home/tarcisio/Projects/general/coronga/obj/Debug/netcoreapp3.0/coronga.dll
+/home/tarcisio/Projects/general/coronga/obj/Debug/netcoreapp3.0/coronga.pdb

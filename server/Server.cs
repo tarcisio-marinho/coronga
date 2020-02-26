@@ -6,6 +6,14 @@ using coronga.crypto;
 
 namespace coronga.server
 {
+    public class Main
+    {
+        public static void main(string [] args){
+            Server s =  new Server();
+            Console.WriteLine("entrou");
+            s.main(args);
+        }
+    }
     public class Server
     {
         public readonly string address = "127.0.0.1";
@@ -40,7 +48,7 @@ namespace coronga.server
 
                 int bytesRec = this.sock.Receive(bytes);
 
-                sock.Send(new byte[]{255, 255});
+                sock.Send(new byte[] { 255, 255 });
                 sock.Shutdown(SocketShutdown.Both);
                 sock.Close();
             }

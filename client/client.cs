@@ -8,7 +8,16 @@ using coronga.crypto;
 
 namespace coronga
 {
-    public class client
+    public class Main
+    {
+        public static void main(string[] args){
+            Client c = new Client();
+            c.main(args);
+        }
+
+
+    }
+    public class Client
     {
         public readonly string address = "127.0.0.1";
         public IPEndPoint remoteEP;
@@ -97,7 +106,7 @@ namespace coronga
         {
             // while (true)
             {
-                
+
                 int count = this.sock.Receive(this.buffer);
                 var plainMsg = this.aes.Decrypt(this.buffer);
                 Console.WriteLine("Received: ");

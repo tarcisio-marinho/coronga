@@ -7,6 +7,7 @@ namespace coronga
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("entrou");
         }
     }
 }
