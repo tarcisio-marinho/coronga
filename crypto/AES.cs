@@ -15,7 +15,6 @@ namespace coronga.crypto
         public byte[] Encrypt(byte[] bytesToBeEncrypted)
         {
             byte[] encryptedBytes = null;
-            byte[] saltBytes = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
             using (MemoryStream ms = new MemoryStream())
             {
                 using (RijndaelManaged AES = new RijndaelManaged())
@@ -36,10 +35,9 @@ namespace coronga.crypto
             return encryptedBytes;
         }
 
-        public byte[] Decrypt(byte[] encryptedMsg, byte[] key, byte[] IV)
+        public byte[] Decrypt(byte[] encryptedMsg)
         {
             byte[] decryptedBytes = null;
-            byte[] saltBytes = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
             using (MemoryStream ms = new MemoryStream())
             {
                 using (RijndaelManaged AES = new RijndaelManaged())

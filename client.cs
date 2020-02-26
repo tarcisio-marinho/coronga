@@ -42,6 +42,7 @@ namespace coronga
             this.sock.Send(this.rsa.PubKey);
             int bytesReceived = this.sock.Receive(buffer);
             this.serverRSA = new RSA(Encoding.UTF8.GetString(buffer, 0, buffer.Length));
+            Console.WriteLine("keys exchanged, secure connection created");
         }
 
         public void exchangeAESKey()
@@ -51,11 +52,12 @@ namespace coronga
             int br = this.sock.Receive(buffer);
             byte[] IV = buffer;
             this.aes = new AES(key, IV);
+            Console.WriteLine("AES key exchanged");
         }
 
         public void StartClient()
         {
-            while (true)
+            // while (true)
             {
                 try
                 {
@@ -66,7 +68,7 @@ namespace coronga
                     this.destroySocket();
                     Console.WriteLine("Error: ");
                     Console.WriteLine(e.ToString());
-                    continue;
+                    // continue;
                 }
                 try
                 {
@@ -93,7 +95,14 @@ namespace coronga
         }
         private void exchangeMsgs()
         {
-            throw new NotImplementedException();
+            // while (true)
+            {
+                
+                int count = this.sock.Receive(this.buffer);
+                var plainMsg = this.aes.Decrypt(this.buffer);
+                Console.WriteLine("Received: ");
+                Console.WriteLine(Encoding.UTF8.GetString(plainMsg, 0, plainMsg.Length));
+            }
         }
     }
 }

@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/tarcisio/Projects/coronga/coronga.csproj",
+      "projectUniqueName": "/home/tarcisio/Projects/general/coronga/coronga.csproj",
       "projectName": "coronga",
-      "projectPath": "/home/tarcisio/Projects/coronga/coronga.csproj",
+      "projectPath": "/home/tarcisio/Projects/general/coronga/coronga.csproj",
       "packagesPath": "/home/tarcisio/.nuget/packages/",
-      "outputPath": "/home/tarcisio/Projects/coronga/obj/",
+      "outputPath": "/home/tarcisio/Projects/general/coronga/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/tarcisio/.nuget/NuGet/NuGet.Config"
@@ -51,18 +51,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[3.0.0, 3.0.0]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.0.103/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.0.100/RuntimeIdentifierGraph.json"
       }
     }
   }
