@@ -1,5 +1,6 @@
 ﻿using System;
 using coronga.crypto;
+using coronga.server;
 
 namespace coronga
 {
@@ -7,7 +8,11 @@ namespace coronga
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("entrou");
+            // Client c = new Client();
+            // c.main(args);
+
+            Server s = new Server();
+            s.main(args);
         }
     }
 }

@@ -42,36 +42,23 @@ namespace coronga.server
             this.exchangeRSAKeys();
             this.exchangeAESKey();
             this.exchangeMsgs();
-            try
-            {
-                byte[] bytes = null;
-
-                int bytesRec = this.sock.Receive(bytes);
-
-                sock.Send(new byte[] { 255, 255 });
-                sock.Shutdown(SocketShutdown.Both);
-                sock.Close();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-
         }
 
         private void exchangeMsgs()
         {
-            // while (true)
+            while (true)
             {
                 var msg = "teste_send";
                 var encryptedMsg = this.aes.Encrypt(Encoding.ASCII.GetBytes(msg));
+                Console.WriteLine(encryptedMsg);
                 this.sock.Send(encryptedMsg);
             }
         }
         public void exchangeRSAKeys()
         {
-            int bytesReceived = this.sock.Receive(buffer);
-            this.clientRSA = new RSA(Encoding.UTF8.GetString(buffer, 0, buffer.Length));
+            int bytesReceived = this.sock.Receive(this.buffer);
+            this.clientRSA = new RSA(Encoding.UTF8.GetString(this.buffer, 0, bytesReceived));
+            Array.Clear(this.buffer, 0, this.buffer.Length);
             this.sock.Send(this.rsa.PubKey);
             Console.WriteLine("keys exchanged, secure connection created");
         }
@@ -79,10 +66,10 @@ namespace coronga.server
         public void exchangeAESKey()
         {
             var key = RandomBytes.Generate(32);
-            var IV = RandomBytes.Generate(32);
+            var IV = RandomBytes.Generate(16);
             this.aes = new AES(key, IV);
-            this.mainSock.Send(key);
-            this.mainSock.Send(IV);
+            this.sock.Send(key);
+            this.sock.Send(IV);
             Console.WriteLine("AES key exchanged");
         }
     }

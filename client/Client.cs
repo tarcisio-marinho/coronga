@@ -14,8 +14,6 @@ namespace coronga
             Client c = new Client();
             c.main(args);
         }
-
-
     }
     public class Client
     {
@@ -49,17 +47,20 @@ namespace coronga
         public void exchangeRSAKeys()
         {
             this.sock.Send(this.rsa.PubKey);
-            int bytesReceived = this.sock.Receive(buffer);
-            this.serverRSA = new RSA(Encoding.UTF8.GetString(buffer, 0, buffer.Length));
+            int bytesReceived = this.sock.Receive(this.buffer);
+            this.serverRSA = new RSA(Encoding.UTF8.GetString(this.buffer, 0, bytesReceived));
+            Array.Clear(this.buffer, 0, this.buffer.Length);
             Console.WriteLine("keys exchanged, secure connection created");
         }
 
         public void exchangeAESKey()
         {
-            int bytesReceived = this.sock.Receive(buffer);
-            byte[] key = buffer;
-            int br = this.sock.Receive(buffer);
-            byte[] IV = buffer;
+            int bytesReceived = this.sock.Receive(this.buffer);
+            byte[] key = this.buffer;
+            Array.Clear(this.buffer, 0, this.buffer.Length);
+            int br = this.sock.Receive(this.buffer);
+            byte[] IV = this.buffer;
+            Array.Clear(this.buffer, 0, this.buffer.Length);
             this.aes = new AES(key, IV);
             Console.WriteLine("AES key exchanged");
         }
@@ -104,11 +105,13 @@ namespace coronga
         }
         private void exchangeMsgs()
         {
-            // while (true)
+            while (true)
             {
-
                 int count = this.sock.Receive(this.buffer);
+                Console.WriteLine("encrypted: ");
+                Console.WriteLine(Encoding.UTF8.GetString(this.buffer, 0, this.buffer.Length));
                 var plainMsg = this.aes.Decrypt(this.buffer);
+                Array.Clear(this.buffer, 0, this.buffer.Length);
                 Console.WriteLine("Received: ");
                 Console.WriteLine(Encoding.UTF8.GetString(plainMsg, 0, plainMsg.Length));
             }
